@@ -11,17 +11,27 @@ let modulo = ( () => {
         return busqueda;
     }
 
+    let limpiar = () => {
+        document.getElementById('nombre').value = "";
+        document.getElementById('raza').value = "";
+        document.getElementById('txt-preview').value = "";
+        document.getElementById('poderPelea').value = "";
+        document.getElementById('preview').innerHTML = "";
+    }
+
     return {
         buscarImagen: buscar, //Función Privada
         agregarParticipante: (participante, arreglo) => { //Función Pública
             arreglo.push(participante);
+            limpiar();
+            console.log(arreglo);
             return arreglo;
         },
         mostrarParticipantes: (arreglo) => {
             document.getElementById('Participantes').innerHTML = '';
             arreglo.forEach(element => {
                 document.getElementById('Participantes').innerHTML += `
-                    <div class="card col-4">
+                    <div class="card col-4 cards-participantes" id="${element.Nombre}">
                         <img src="/assets/imgs/${element.Nombre}/${element.Img}" class="card-img-top" alt="Imagen ${element.Nombre}">
                         <div class="card-body">
                         <h5 class="card-title">${element.Nombre}</h5>
@@ -29,11 +39,37 @@ let modulo = ( () => {
                             <div><b>Raza:</b>${element.Raza}</div>
                             <div><b>Poder de Pelea:</b>${element.Poder}</div>
                         </p>
-                        <button type="button" class="btn btn-outline-warning">Habilidad Especial</button>
+                        <button id="participante-${element.Nombre}" type="button" class="btn btn-outline-warning">Habilidad Especial</button>
                         </div>
                     </div>
                 `
             });
+            arreglo.forEach((element, index) => {
+                document.getElementById(`participante-${element.Nombre}`).addEventListener("click",function(){
+                    let raza = arreglo[index].Raza;
+
+                    if(raza == 'Saiyajin'){
+                        arreglo[index].Transformacion();
+                    }
+
+                    if(raza == 'Humano'){
+                        arreglo[index].Coraje();
+                    }
+
+                    modulo.mostrarParticipantes(arreglo)
+                })
+            })
+        },
+        mayor: (arreglo) => {
+            let poderMayor = 0;
+            let indiceMayor = -1;
+            for (const element of arreglo) {
+                if(element.Poder > poderMayor){
+                    poderMayor = element.Poder;
+                    indiceMayor = element
+                }
+            }
+            return indiceMayor;
         }
     }
 })();
@@ -89,6 +125,18 @@ document.getElementById("btnRegistrar").addEventListener("click",function(){
     modulo.mostrarParticipantes(arregloParticipantes);
 
     //console.log(arregloParticipantes);
+})
 
+document.getElementById("btnMasFuerte").addEventListener("click",function(){
+    let participanteFuerte = modulo.mayor(arregloParticipantes);
+    let cards = document.getElementsByClassName('cards-participantes')
+
+    for (const item of cards) {
+        if(participanteFuerte.Nombre == item.getAttribute('id')){
+            item.setAttribute('class','card col-4 cards-participantes fuerte');
+        }else{
+            item.setAttribute('class','card col-4 cards-participantes');
+        }
+    }
 })
 

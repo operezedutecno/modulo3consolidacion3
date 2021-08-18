@@ -6,7 +6,7 @@ class Saiyajin extends Personaje{
     }
 
     Transformacion(){
-        this.Poder(this.Poder * 1.80);
+        this.setPoder(this.Poder * 1.80);
     }
 }
 

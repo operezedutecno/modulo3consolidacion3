@@ -6,7 +6,7 @@ class Humano extends Personaje{
     }
 
     Coraje(){
-        this.Poder(this.Poder * 1.20);
+        this.setPoder(this.Poder * 1.20);
     }
 }
 
